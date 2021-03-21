@@ -1,8 +1,10 @@
-#include <LiquidCrystal.h> // For the defs
-#include "fastio.h"
-#include <binary.h>
 
-// byte pixels[8][2][16] = {0};
+#include "pixel-perfect.h"
+#include <Arduino.h>
+// #include <LiquidCrystal.h> // For the defs
+
+#include "fastio.h"
+
 byte pixels[2][16][8] = {0};
 
 #define RS 6
@@ -58,7 +60,7 @@ void lcd_init() {
   // // finally, set # lines, font size, etc.
   lcd_command(LCD_FUNCTIONSET | LCD_2LINE);
   lcd_command(LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF);
-  lcd_command(LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT);
+  // lcd_command(LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT);
 
   lcd_command(0x01); // Clear display
   delay(2); // Useful after the clear to reduce screen glitches
@@ -94,24 +96,23 @@ void loop() {
   // }
 
   // DOESN'T:
-  for (int blaine=0; blaine < 4; blaine++ ) {
-    START_CGRAM_WRITE(blaine+4);
-    lcd_write_pixel_patch(1, 4*blaine);
-  }
+  // for (int j=0; j < 4; j++ ) {
+  //   START_CGRAM_WRITE(j+4);
+  //   lcd_write_pixel_patch(1, 4*j);
+  // }
 
   // WORKS:
-  // START_CGRAM_WRITE(4);
-  // lcd_write_pixel_patch(1, 0);
+  START_CGRAM_WRITE(4);
+  lcd_write_pixel_patch(1, 0);
 
-  // START_CGRAM_WRITE(5);
-  // lcd_write_pixel_patch(1, 4);
+  START_CGRAM_WRITE(5);
+  lcd_write_pixel_patch(1, 4);
 
-  // START_CGRAM_WRITE(6);
-  // lcd_write_pixel_patch(1, 8);
+  START_CGRAM_WRITE(6);
+  lcd_write_pixel_patch(1, 8);
 
-  // START_CGRAM_WRITE(7);
-  // lcd_write_pixel_patch(1, 12);
-
+  START_CGRAM_WRITE(7);
+  lcd_write_pixel_patch(1, 12);
 
 
   // for (int j=0; j < 4; j++) {

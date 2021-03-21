@@ -1,15 +1,13 @@
-# Modified Prusa Firmware makefile
+# 
 # Written by Marcin Konowalczyk
 # Based on the makefile for Marlin firmware
 
-##
 ## Operating system specific stuff
-##
 
 OS ?= $(shell uname -s)
-
 ifneq ($(OS),Darwin)
-  $(error Figure out make on windows.) # TODO
+  # TODO
+  $(error Have not figured out the paths on other operating systems.)
 endif
 
 ifeq ($(OS), Darwin)
@@ -19,20 +17,15 @@ ifeq ($(OS), Darwin)
   AVR_TOOLS_PATH = $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/bin
 endif
 
-##
-## Get the versionof the arduino software installed
-##
+## Get the version of the arduino software installed
 
 ARDUINO_DUMPVERSION = $(shell cat $(ARDUINO_INSTALL_DIR)/lib/version.txt)
-ARDUINO_MAJ := $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f1 -)
-ARDUINO_MIN := $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f2 -)
-ARDUINO_PATCHLEVEL := $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f3 -)
-ARDUINO_VERSION_NUMBER := $(shell expr $(ARDUINO_MAJ) \* 10000 + $(ARDUINO_MIN) \* 100 + $(ARDUINO_PATCHLEVEL))
+ARDUINO_MAJ = $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f1 -)
+ARDUINO_MIN = $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f2 -)
+ARDUINO_PATCHLEVEL = $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f3 -)
+ARDUINO_VERSION_NUMBER = $(shell expr $(ARDUINO_MAJ) \* 10000 + $(ARDUINO_MIN) \* 100 + $(ARDUINO_PATCHLEVEL))
 
-##
 ## Make sure we're in a root directory of the project
-##
-
 PWD = $(abspath .)
 THIS_MAKEFILE = $(abspath $(firstword $(MAKEFILE_LIST)))
 PROJECT_ROOT = $(patsubst %/,%,$(dir $(THIS_MAKEFILE)))
@@ -43,15 +36,14 @@ endif
 
 TARGET = $(notdir $(CURDIR))
 
-##
 ## Directories and paths
-##
 
 BUILD_DIR = $(PROJECT_ROOT)/build
 SRC_DIR = $(PROJECT_ROOT)/src
 
 # Library files
-LIB_SRC = wiring.c wiring_analog.c wiring_digital.c wiring_shift.c hooks.c
+LIB_SRC = wiring.c wiring_digital.c hooks.c
+# LIB_SRC += wiring_analog.c wiring_digital.c wiring_shift.c
 # LIB_SRC += WInterrupts.c
 
 LIB_CXXSRC =
@@ -72,22 +64,19 @@ OBJ += $(patsubst %.cpp, $(BUILD_DIR)/arduino_lib/%.o, $(LIB_CXXSRC))
 OBJ += $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(CSRC))
 OBJ += $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(CXXSRC))
 
-##
-## 
-##
+## Other stuff
 
-# Program settings
 CC = $(AVR_TOOLS_PATH)/avr-gcc
 CXX = $(AVR_TOOLS_PATH)/avr-g++
 OBJCOPY = $(AVR_TOOLS_PATH)/avr-objcopy
 AVRDUDE = $(AVR_TOOLS_PATH)/avrdude
 SIZE = $(AVR_TOOLS_PATH)/avr-size
 
-
 # Programming support using avrdude. Settings and variables.
 UPLOAD_PORT = /dev/cu.usbmodem14201
 AVRDUDE_CONF = $(AVR_TOOLS_PATH)/../etc/avrdude.conf
-AVRDUDE_FLAGS = -v -D -C $(AVRDUDE_CONF) -p m2560 -c avrispv2
+AVRDUDE_FLAGS = -v -D -C $(AVRDUDE_CONF) -p atmega328p -c arduino
+# AVRDUDE_FLAGS += -b 115200
 
 # AR = $(AVR_TOOLS_PATH)$(TOOL_PREFIX)-ar
 # SIZE = $(AVR_TOOLS_PATH)$(TOOL_PREFIX)-size
@@ -99,23 +88,23 @@ VPATH =
 VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/cores/arduino
 
 # Location of pins_arduino.h requred by Arduino.h
-VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/variants/mega
+VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/variants/standard
 
 # VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/libraries/SPI/src
 # VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/libraries/SoftwareSerial/src
-# VPATH += $(ARDUINO_INSTALL_DIR)/libraries/LiquidCrystal/src
+VPATH += $(ARDUINO_INSTALL_DIR)/libraries/LiquidCrystal/src
 
-##
+# VPATH += $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/avr/include/avr/
+
 ## Collect compiler flags
-##
 
 CFLAGS =
 CXXFLAGS =
 
 # Pass definitions to the code
 # 16MHz Clock Speed
-DEFS = -DF_CPU=16000000UL
-# DEFS += -DARDUINO=$(ARDUINO_VERSION_NUMBER)
+DEFS = -D F_CPU=16000000UL
+# DEFS += -D ARDUINO=$(ARDUINO_VERSION_NUMBER)
 CFLAGS += $(DEFS)
 CXXFLAGS += $(DEFS)
 
@@ -145,8 +134,8 @@ CFLAGS += $(OPTIMISATION)
 CXXFLAGS += $(OPTIMISATION)
 
 # MCU flags
-CFLAGS += -mmcu=atmega2560
-CXXFLAGS += -mmcu=atmega2560
+CFLAGS += -mmcu=atmega328p
+CXXFLAGS += -mmcu=atmega328p
 
 # Extra flags
 # CEXTRA = 
