@@ -23,14 +23,113 @@ int h[16] = {0}; // history
 
 void setup() {
 
+// Debug charater set 1
   pixels[0][0][0]  = B10000;
   pixels[0][4][0]  = B01000;
   pixels[0][8][0]  = B00100;
   pixels[0][12][0] = B00010;
-  pixels[1][0][0]  = B10001;
-  pixels[1][4][0]  = B01001;
-  pixels[1][8][0]  = B00101;
-  pixels[1][12][0] = B00011;
+  pixels[0][0][1]  = B10000;
+  pixels[0][4][1]  = B10000;
+  pixels[0][8][1]  = B10000;
+  pixels[0][12][1] = B10000;
+  pixels[0][0][2]  = B10000;
+  pixels[0][4][2]  = B10000;
+  pixels[0][8][2]  = B10000;
+  pixels[0][12][2] = B10000;
+
+  pixels[1][0][0]  = B10000;
+  pixels[1][4][0]  = B01000;
+  pixels[1][8][0]  = B00100;
+  pixels[1][12][0] = B00010;
+  pixels[1][0][1]  = B01000;
+  pixels[1][4][1]  = B01000;
+  pixels[1][8][1]  = B01000;
+  pixels[1][12][1] = B01000;
+  pixels[1][0][2]  = B10000;
+  pixels[1][4][2]  = B10000;
+  pixels[1][8][2]  = B10000;
+  pixels[1][12][2] = B10000;
+
+// Debug charater set 2
+  pixels[0][1][0]  = B10000;
+  pixels[0][5][0]  = B01000;
+  pixels[0][9][0]  = B00100;
+  pixels[0][13][0] = B00010;
+  pixels[0][1][1]  = B10000;
+  pixels[0][5][1]  = B10000;
+  pixels[0][9][1]  = B10000;
+  pixels[0][13][1] = B10000;
+  pixels[0][1][2]  = B01000;
+  pixels[0][5][2]  = B01000;
+  pixels[0][9][2]  = B01000;
+  pixels[0][13][2] = B01000;
+
+  pixels[1][1][0]  = B10000;
+  pixels[1][5][0]  = B01000;
+  pixels[1][9][0]  = B00100;
+  pixels[1][13][0] = B00010;
+  pixels[1][1][1]  = B01000;
+  pixels[1][5][1]  = B01000;
+  pixels[1][9][1]  = B01000;
+  pixels[1][13][1] = B01000;
+  pixels[1][1][2]  = B01000;
+  pixels[1][5][2]  = B01000;
+  pixels[1][9][2]  = B01000;
+  pixels[1][13][2] = B01000;
+
+// Debug charater set 3
+  pixels[0][2][0]  = B10000;
+  pixels[0][6][0]  = B01000;
+  pixels[0][10][0]  = B00100;
+  pixels[0][14][0] = B00010;
+  pixels[0][2][1]  = B10000;
+  pixels[0][6][1]  = B10000;
+  pixels[0][10][1]  = B10000;
+  pixels[0][14][1] = B10000;
+  pixels[0][2][2]  = B00100;
+  pixels[0][6][2]  = B00100;
+  pixels[0][10][2]  = B00100;
+  pixels[0][14][2] = B00100;
+
+  pixels[1][2][0]  = B10000;
+  pixels[1][6][0]  = B01000;
+  pixels[1][10][0]  = B00100;
+  pixels[1][14][0] = B00010;
+  pixels[1][2][1]  = B01000;
+  pixels[1][6][1]  = B01000;
+  pixels[1][10][1]  = B01000;
+  pixels[1][14][1] = B01000;
+  pixels[1][2][2]  = B00100;
+  pixels[1][6][2]  = B00100;
+  pixels[1][10][2]  = B00100;
+  pixels[1][14][2] = B00100;
+
+// Debug charater set 4
+  pixels[0][3][0]  = B10000;
+  pixels[0][7][0]  = B01000;
+  pixels[0][11][0]  = B00100;
+  pixels[0][15][0] = B00010;
+  pixels[0][3][1]  = B10000;
+  pixels[0][7][1]  = B10000;
+  pixels[0][11][1]  = B10000;
+  pixels[0][15][1] = B10000;
+  pixels[0][3][2]  = B00010;
+  pixels[0][7][2]  = B00010;
+  pixels[0][11][2]  = B00010;
+  pixels[0][15][2] = B00010;
+
+  pixels[1][3][0]  = B10000;
+  pixels[1][7][0]  = B01000;
+  pixels[1][11][0]  = B00100;
+  pixels[1][15][0] = B00010;
+  pixels[1][3][1]  = B01000;
+  pixels[1][7][1]  = B01000;
+  pixels[1][11][1]  = B01000;
+  pixels[1][15][1] = B01000;
+  pixels[1][3][2]  = B00010;
+  pixels[1][7][2]  = B00010;
+  pixels[1][11][2]  = B00010;
+  pixels[1][15][2] = B00010;
 
   pinMode(A5,INPUT);
 
@@ -43,33 +142,33 @@ void setup() {
   SET_CURSOR(3,1); lcd_write(byte(0x20));
 }
 
-void loop() {
-  // Characters in positions 0, 4, 8, 12, 16, 20, 24 and 28
-  int offset = 0;
+void write_cgram_at_offset(int offset) {
   START_CGRAM_WRITE(0);
-  lcd_write_pixel_patch(0, 0);
+  lcd_write_pixel_patch(0, 0+offset);
 
   START_CGRAM_WRITE(1);
-  lcd_write_pixel_patch(0, 4);
+  lcd_write_pixel_patch(0, 4+offset);
   
   START_CGRAM_WRITE(2);
-  lcd_write_pixel_patch(0, 8);
+  lcd_write_pixel_patch(0, 8+offset);
   
   START_CGRAM_WRITE(3);
-  lcd_write_pixel_patch(0, 12);
+  lcd_write_pixel_patch(0, 12+offset);
 
   START_CGRAM_WRITE(4);
-  lcd_write_pixel_patch(1, 0);
+  lcd_write_pixel_patch(1, 0+offset);
 
   START_CGRAM_WRITE(5);
-  lcd_write_pixel_patch(1, 4);
+  lcd_write_pixel_patch(1, 4+offset);
 
   START_CGRAM_WRITE(6);
-  lcd_write_pixel_patch(1, 8);
+  lcd_write_pixel_patch(1, 8+offset);
 
   START_CGRAM_WRITE(7);
-  lcd_write_pixel_patch(1, 12);
+  lcd_write_pixel_patch(1, 12+offset);
+}
 
+void blink_characters_at_offset(int offset) {
   for (int j=0; j < 4; j++) {
     SET_CURSOR(4*j+offset,0); lcd_write(byte(j));
   }
@@ -85,15 +184,24 @@ void loop() {
   for (int j=0; j < 4; j++) {
     SET_CURSOR(4*j+offset,1); lcd_write(byte(0x20));
   }
+}
 
-  // SET_CURSOR(0,1); lcd_write(byte(0));
-  // SET_CURSOR(1,1); lcd_write(byte(1));
-  // SET_CURSOR(2,1); lcd_write(byte(2));
-  // SET_CURSOR(3,1); lcd_write(byte(3));
-  // SET_CURSOR(4,1); lcd_write(byte(4));
-  // SET_CURSOR(5,1); lcd_write(byte(5));
-  // SET_CURSOR(6,1); lcd_write(byte(6));
-  // SET_CURSOR(7,1); lcd_write(byte(7));
+void loop() {
+  int offset = 0;
+  write_cgram_at_offset(offset);
+  blink_characters_at_offset(offset);
+  
+  offset = 1;
+  write_cgram_at_offset(offset);
+  blink_characters_at_offset(offset);
+
+  offset = 2;
+  write_cgram_at_offset(offset);
+  blink_characters_at_offset(offset);
+
+  offset = 3;
+  write_cgram_at_offset(offset);
+  blink_characters_at_offset(offset);
 }
 
 ///////////////////
