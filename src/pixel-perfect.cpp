@@ -11,6 +11,17 @@ byte pixels[2][16][8] = {0};
 #define GET_PIXEL(row,col) (pixels[row/8][col/5][row%8] >> 4-(col%5)) & 0x1
 #define SET_PIXEL(row,col,value) pixels[row/8][col/5][row%8] = (value & 0x1) << (4-(col%5))
 
+// #define SET_CHARACTER(row,col,bytes) do {\
+//   for (int _line_number = 0; _line_number < 8; _line_number++) {\
+//     pixels[row][col][_line_number] = bytes[_line_number];\
+//   }\
+// } while (0)
+
+// Set character at (character index) row, col in the pixel array
+#define SET_CHARACTER(row,col, B0,B1,B2,B3,B4,B5,B6,B7)\
+pixels[row][col][0] = B0; pixels[row][col][1] = B1; pixels[row][col][2] = B2; pixels[row][col][3] = B3;\
+pixels[row][col][4] = B4; pixels[row][col][5] = B5; pixels[row][col][6] = B6; pixels[row][col][7] = B7;
+
 void setup() {
   set_debug_characters();
 
@@ -38,112 +49,48 @@ void loop() {
 
 void set_debug_characters() {
   // Debug charater set 1
-  pixels[0][0][2]  = B10000;
-  pixels[0][4][2]  = B01000;
-  pixels[0][8][2]  = B00100;
-  pixels[0][12][2] = B00010;
-  pixels[0][0][3]  = B10000;
-  pixels[0][4][3]  = B10000;
-  pixels[0][8][3]  = B10000;
-  pixels[0][12][3] = B10000;
-  pixels[0][0][4]  = B10000;
-  pixels[0][4][4]  = B10000;
-  pixels[0][8][4]  = B10000;
-  pixels[0][12][4] = B10000;
-
-  pixels[1][0][2]  = B10000;
-  pixels[1][4][2]  = B01000;
-  pixels[1][8][2]  = B00100;
-  pixels[1][12][2] = B00010;
-  pixels[1][0][3]  = B01000;
-  pixels[1][4][3]  = B01000;
-  pixels[1][8][3]  = B01000;
-  pixels[1][12][3] = B01000;
-  pixels[1][0][4]  = B10000;
-  pixels[1][4][4]  = B10000;
-  pixels[1][8][4]  = B10000;
-  pixels[1][12][4] = B10000;
+  // Characters at positions 0, 4, 8 and 12
+  SET_CHARACTER(0,  0, 0,0,B10000,B10000,B10000,0,0,0);
+  SET_CHARACTER(0,  4, 0,0,B01000,B10000,B10000,0,0,0);
+  SET_CHARACTER(0,  8, 0,0,B00100,B10000,B10000,0,0,0);
+  SET_CHARACTER(0, 12, 0,0,B00010,B10000,B10000,0,0,0);
+  SET_CHARACTER(1,  0, 0,0,B10000,B01000,B10000,0,0,0);
+  SET_CHARACTER(1,  4, 0,0,B01000,B01000,B10000,0,0,0);
+  SET_CHARACTER(1,  8, 0,0,B00100,B01000,B10000,0,0,0);
+  SET_CHARACTER(1, 12, 0,0,B00010,B01000,B10000,0,0,0);
 
   // Debug charater set 2
-  pixels[0][1][2]  = B10000;
-  pixels[0][5][2]  = B01000;
-  pixels[0][9][2]  = B00100;
-  pixels[0][13][2] = B00010;
-  pixels[0][1][3]  = B10000;
-  pixels[0][5][3]  = B10000;
-  pixels[0][9][3]  = B10000;
-  pixels[0][13][3] = B10000;
-  pixels[0][1][4]  = B01000;
-  pixels[0][5][4]  = B01000;
-  pixels[0][9][4]  = B01000;
-  pixels[0][13][4] = B01000;
-
-  pixels[1][1][2]  = B10000;
-  pixels[1][5][2]  = B01000;
-  pixels[1][9][2]  = B00100;
-  pixels[1][13][2] = B00010;
-  pixels[1][1][3]  = B01000;
-  pixels[1][5][3]  = B01000;
-  pixels[1][9][3]  = B01000;
-  pixels[1][13][3] = B01000;
-  pixels[1][1][4]  = B01000;
-  pixels[1][5][4]  = B01000;
-  pixels[1][9][4]  = B01000;
-  pixels[1][13][4] = B01000;
+  // Characters at positions 1, 5, 8 and 13
+  SET_CHARACTER(0,  1, 0,0,B10000,B10000,B01000,0,0,0);
+  SET_CHARACTER(0,  5, 0,0,B01000,B10000,B01000,0,0,0);
+  SET_CHARACTER(0,  9, 0,0,B00100,B10000,B01000,0,0,0);
+  SET_CHARACTER(0, 13, 0,0,B00010,B10000,B01000,0,0,0);
+  SET_CHARACTER(1,  1, 0,0,B10000,B01000,B01000,0,0,0);
+  SET_CHARACTER(1,  5, 0,0,B01000,B01000,B01000,0,0,0);
+  SET_CHARACTER(1,  9, 0,0,B00100,B01000,B01000,0,0,0);
+  SET_CHARACTER(1, 13, 0,0,B00010,B01000,B01000,0,0,0);
 
   // Debug charater set 3
-  pixels[0][2][2]  = B10000;
-  pixels[0][6][2]  = B01000;
-  pixels[0][10][2] = B00100;
-  pixels[0][14][2] = B00010;
-  pixels[0][2][3]  = B10000;
-  pixels[0][6][3]  = B10000;
-  pixels[0][10][3] = B10000;
-  pixels[0][14][3] = B10000;
-  pixels[0][2][4]  = B00100;
-  pixels[0][6][4]  = B00100;
-  pixels[0][10][4] = B00100;
-  pixels[0][14][4] = B00100;
-
-  pixels[1][2][2]  = B10000;
-  pixels[1][6][2]  = B01000;
-  pixels[1][10][2] = B00100;
-  pixels[1][14][2] = B00010;
-  pixels[1][2][3]  = B01000;
-  pixels[1][6][3]  = B01000;
-  pixels[1][10][3] = B01000;
-  pixels[1][14][3] = B01000;
-  pixels[1][2][4]  = B00100;
-  pixels[1][6][4]  = B00100;
-  pixels[1][10][4] = B00100;
-  pixels[1][14][4] = B00100;
+  // Characters at positions 2, 6, 10 and 14
+  SET_CHARACTER(0,  2, 0,0,B10000,B10000,B00100,0,0,0);
+  SET_CHARACTER(0,  6, 0,0,B01000,B10000,B00100,0,0,0);
+  SET_CHARACTER(0, 10, 0,0,B00100,B10000,B00100,0,0,0);
+  SET_CHARACTER(0, 14, 0,0,B00010,B10000,B00100,0,0,0);
+  SET_CHARACTER(1,  2, 0,0,B10000,B01000,B00100,0,0,0);
+  SET_CHARACTER(1,  6, 0,0,B01000,B01000,B00100,0,0,0);
+  SET_CHARACTER(1, 10, 0,0,B00100,B01000,B00100,0,0,0);
+  SET_CHARACTER(1, 14, 0,0,B00010,B01000,B00100,0,0,0);
 
   // Debug charater set 4
-  pixels[0][3][2]  = B10000;
-  pixels[0][7][2]  = B01000;
-  pixels[0][11][2] = B00100;
-  pixels[0][15][2] = B00010;
-  pixels[0][3][3]  = B10000;
-  pixels[0][7][3]  = B10000;
-  pixels[0][11][3] = B10000;
-  pixels[0][15][3] = B10000;
-  pixels[0][3][4]  = B00010;
-  pixels[0][7][4]  = B00010;
-  pixels[0][11][4] = B00010;
-  pixels[0][15][4] = B00010;
-
-  pixels[1][3][2]  = B10000;
-  pixels[1][7][2]  = B01000;
-  pixels[1][11][2] = B00100;
-  pixels[1][15][2] = B00010;
-  pixels[1][3][3]  = B01000;
-  pixels[1][7][3]  = B01000;
-  pixels[1][11][3] = B01000;
-  pixels[1][15][3] = B01000;
-  pixels[1][3][4]  = B00010;
-  pixels[1][7][4]  = B00010;
-  pixels[1][11][4] = B00010;
-  pixels[1][15][4] = B00010;
+  // Characters at positions 3, 7, 11 and 15
+  SET_CHARACTER(0,  3, 0,0,B10000,B10000,B00010,0,0,0);
+  SET_CHARACTER(0,  7, 0,0,B01000,B10000,B00010,0,0,0);
+  SET_CHARACTER(0, 11, 0,0,B00100,B10000,B00010,0,0,0);
+  SET_CHARACTER(0, 15, 0,0,B00010,B10000,B00010,0,0,0);
+  SET_CHARACTER(1,  3, 0,0,B10000,B01000,B00010,0,0,0);
+  SET_CHARACTER(1,  7, 0,0,B01000,B01000,B00010,0,0,0);
+  SET_CHARACTER(1, 11, 0,0,B00100,B01000,B00010,0,0,0);
+  SET_CHARACTER(1, 15, 0,0,B00010,B01000,B00010,0,0,0);
 }
 
 ///////////////////
