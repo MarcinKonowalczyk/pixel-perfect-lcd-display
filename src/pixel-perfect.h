@@ -1,13 +1,8 @@
 #include <inttypes.h>
 #define byte uint8_t
 
-#define SET_CURSOR(row,col) lcd_command(0x80 | (col + row*0x40) )
-#define START_CGRAM_WRITE(position) lcd_command(0x40 + position*0x08);
-
-void set_debug_characters();
-void write_cgram_at_offset(int offset);
-void blink_characters_at_offset(int offset);
-void display_pixel_array();
+// Row x Column x Line
+byte pixels[2][16][8] = {0};
 
 // LCD pins
 #define RS 6
@@ -16,12 +11,13 @@ void display_pixel_array();
 #define D5 9
 #define D6 12
 #define D7 13
-#define IN 19 // A5 input
 
-///////////////////
-// LCD functions //
-///////////////////
+// CGRAM helper function headers
+void display_pixel_array();
+void write_cgram_at_offset(int offset);
+void blink_characters_at_offset(int offset);
 
+// LCD function headers
 void lcd_init();
 void lcd_write_empty();
 void lcd_write_pixel_patch(int row, int col);
@@ -30,10 +26,14 @@ void lcd_command(byte value);
 void lcd_write8bits(byte value);
 void lcd_write4bits(byte value);
 
+// LCD command macros
+#define SET_CURSOR(row,col) lcd_command(0x80 | (col + row*0x40) )
+#define START_CGRAM_WRITE(position) lcd_command(0x40 + position*0x08);
+
 // Pulse enable pin macro
 // Apparently (according to LiquidCrysta.cpp) commands need > 37us to settle,
 // but I had it workign even without any delay. Nevertheless delay left at 50us // because not everyone may have such a forgiving LCD.
-#define PULSE_ENABLE do {WRITE(EN, HIGH); delayMicroseconds(1); WRITE(EN, LOW);delayMicroseconds(50);} while (0)
+#define PULSE_ENABLE do {WRITE(EN, HIGH); delayMicroseconds(1); WRITE(EN, LOW);delayMicroseconds(100);} while (0)
 
 // Helper macros to addres the pixel array per-pixel
 // Here 'row' and 'col' are the indices of the individual pixels
@@ -53,11 +53,17 @@ void lcd_write4bits(byte value);
 } while (0)
 
 // Debug character set
-// Row 0 is the character row index in binary
-// Row 1 is the character column index in binary
-// Row 2 increments on each quartet in a line
-// Row 3 increments on each line
-// Row 4 increments on each set of characters
+//
+//  row | description
+//  --------------------------------------------------------
+//   0  |  Character row index in binary (right aligned)
+//   1  |  Character column index in binary (right aligned)
+//   2  |  empty
+//   3  |  increments on each quartet in a line
+//   4  |  increments on each line
+//   5  |  increments on each set of characters
+//   6  |  empty
+//   7  |  empty
 
 #define SET_DEBUG_CHARACTERS(...) do {\
   /* Debug charater set 1 at positions 0, 4, 8 and 12 */\

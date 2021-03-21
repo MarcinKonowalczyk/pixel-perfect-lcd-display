@@ -3,26 +3,9 @@
 #include "pixel-perfect.h"
 #include "fastio.h"
 
-// Row x Column x Line
-byte pixels[2][16][8] = {0};
-
 void setup() {
   SET_DEBUG_CHARACTERS();
-
-  // To test whether SET_ and GET_PIXEL macros work
-  // SET_PIXEL(8,5,1);
-  // SET_PIXEL(8,4,GET_PIXEL(8,5));
-
-  SET_INPUT(IN);
-  // pinMode(A5,INPUT);
-
   lcd_init();
-
-  // Blank both positions
-  SET_CURSOR(1,0); lcd_write(byte(0x20));
-  SET_CURSOR(1,1); lcd_write(byte(0x20));
-  SET_CURSOR(1,2); lcd_write(byte(0x20));
-  SET_CURSOR(1,3); lcd_write(byte(0x20));
 }
 
 void loop() {
@@ -67,20 +50,20 @@ void blink_characters_at_offset(int offset) {
 void lcd_init() {
   SET_OUTPUT(RS); SET_OUTPUT(EN);
   SET_OUTPUT(D4); SET_OUTPUT(D5); SET_OUTPUT(D6); SET_OUTPUT(D7);
-  delay(50); // This is necessary
+  delay(50); // this is necessary
   WRITE(RS, LOW);
   WRITE(EN, LOW);
   
-  // we start in 8bit mode, try to set 4 bit mode
+  // lcd starts in 8bit mode, try to set 4 bit mode
   lcd_write4bits(0x03);
   delayMicroseconds(4500); // wait min 4.1ms
 
   // second try
   lcd_write4bits(0x03);
   delayMicroseconds(4500); // wait min 4.1ms
-  
+
   // third go!
-  lcd_write4bits(0x03); 
+  lcd_write4bits(0x03);
   delayMicroseconds(150);
 
   // finally, set to 4-bit interface
@@ -89,7 +72,7 @@ void lcd_init() {
   // // finally, set # lines, font size, etc.
   lcd_command(0x20 | 0x08); // LCD_FUNCTIONSET | LCD_2LINE
   lcd_command(0x08 | 0x04); // LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
-  lcd_command(0x04 | 0x02); // LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
+  // lcd_command(0x04 | 0x02); // LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
 
   lcd_command(0x01); // Clear display
   delay(2); // Useful after the clear to reduce screen glitches
@@ -124,10 +107,6 @@ void lcd_command(byte value) {
   WRITE(RS,LOW);
   lcd_write8bits(value);
 }
-
-// Pulse enable pin
-// commands need > 37us to settle
-# define PULSE_ENABLE do {WRITE(EN, HIGH); delayMicroseconds(1); WRITE(EN, LOW); delayMicroseconds(50);} while (0)
 
 void lcd_write8bits(byte value) {
   WRITE(D4,(value >> 4) & 0x1);
