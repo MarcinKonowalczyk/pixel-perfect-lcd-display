@@ -97,7 +97,8 @@ do { \
 
 /*
 	PORTS AND FUNCTIONS
-  Pinout for the AVR ATmega2560 processor (Einsy Rambo board) only
+  Pinout for the AVR ATmega328P processor (Arduino UNO) only
+  https://www.arduino.cc/en/Hacking/PinMapping168
 */
 
 #ifndef __AVR_ATmega328P__
@@ -174,3 +175,34 @@ do { \
 #define	DIO13_RPORT	PINB
 #define	DIO13_WPORT	PORTB
 #define	DIO13_DDR		DDRB
+
+// Analog pins 0->5
+#define	DIO14_PIN		PINC0
+#define	DIO14_RPORT	PINC
+#define	DIO14_WPORT	PORTC
+#define	DIO14_DDR		DDRC
+
+#define	DIO15_PIN		PINC0
+#define	DIO15_RPORT	PINC
+#define	DIO15_WPORT	PORTC
+#define	DIO15_DDR		DDRC
+
+#define	DIO16_PIN		PINC1
+#define	DIO16_RPORT	PINC
+#define	DIO16_WPORT	PORTC
+#define	DIO16_DDR		DDRC
+
+#define	DIO17_PIN		PINC2
+#define	DIO17_RPORT	PINC
+#define	DIO17_WPORT	PORTC
+#define	DIO17_DDR		DDRC
+
+#define	DIO18_PIN		PINC3
+#define	DIO18_RPORT	PINC
+#define	DIO18_WPORT	PORTC
+#define	DIO18_DDR		DDRC
+
+#define	DIO19_PIN		PINC4
+#define	DIO19_RPORT	PINC
+#define	DIO19_WPORT	PORTC
+#define	DIO19_DDR		DDRC
