@@ -1,4 +1,3 @@
-
 #include "pixel-perfect.h"
 #include <Arduino.h>
 #include "fastio.h"
@@ -22,8 +21,7 @@ int h[16] = {0}; // history
 #define SET_CURSOR(col,row) lcd_command(0x80 | (col + row*0x40) )
 #define START_CGRAM_WRITE(position) lcd_command(0x40 + position*0x08);
 
-// LCD initialisation from LiquidCrystal.cpp
-void lcd_init() {
+void setup() {
 
   pixels[0][0][0]  = B10000;
   pixels[0][4][0]  = B01000;
@@ -34,6 +32,81 @@ void lcd_init() {
   pixels[1][8][0]  = B00101;
   pixels[1][12][0] = B00011;
 
+  pinMode(A5,INPUT);
+
+  lcd_init();
+
+  // Blank both positions
+  SET_CURSOR(0,1); lcd_write(byte(0x20));
+  SET_CURSOR(1,1); lcd_write(byte(0x20));
+  SET_CURSOR(2,1); lcd_write(byte(0x20));
+  SET_CURSOR(3,1); lcd_write(byte(0x20));
+}
+
+void loop() {
+  // Characters in positions 0, 4, 8, 12, 16, 20, 24 and 28
+  int offset = 0;
+  for (int j=0; j < 4; j++) {
+    START_CGRAM_WRITE(j);
+    lcd_write_pixel_patch(0, 4*j+offset);
+  }
+  // for (int j=0; j < 4; j++) {
+  //   START_CGRAM_WRITE(j+4);
+  //   lcd_write_pixel_patch(1, 4*j+offset);
+  // }
+
+  // DOESN'T:
+  // for (int j=0; j < 4; j++ ) {
+  //   START_CGRAM_WRITE(j+4);
+  //   lcd_write_pixel_patch(1, 4*j);
+  // }
+
+  // WORKS:
+  START_CGRAM_WRITE(4);
+  lcd_write_pixel_patch(1, 0);
+
+  START_CGRAM_WRITE(5);
+  lcd_write_pixel_patch(1, 4);
+
+  START_CGRAM_WRITE(6);
+  lcd_write_pixel_patch(1, 8);
+
+  START_CGRAM_WRITE(7);
+  lcd_write_pixel_patch(1, 12);
+
+
+  // for (int j=0; j < 4; j++) {
+  //   SET_CURSOR(4*j+offset,0); lcd_write(byte(j));
+  // }
+  // // for (int j=0; j < 4; j++) {
+  // //   SET_CURSOR(4*j+offset,1); lcd_write(byte(j+4));
+  // // }
+
+  // delay(20);
+
+  // for (int j=0; j < 4; j++) {
+  //   SET_CURSOR(4*j+offset,0); lcd_write(byte(0x20));
+  // }
+  // for (int j=0; j < 4; j++) {
+  //   SET_CURSOR(4*j+offset,1); lcd_write(byte(0x20));
+  // }
+
+  SET_CURSOR(0,1); lcd_write(byte(0));
+  SET_CURSOR(1,1); lcd_write(byte(1));
+  SET_CURSOR(2,1); lcd_write(byte(2));
+  SET_CURSOR(3,1); lcd_write(byte(3));
+  SET_CURSOR(4,1); lcd_write(byte(4));
+  SET_CURSOR(5,1); lcd_write(byte(5));
+  SET_CURSOR(6,1); lcd_write(byte(6));
+  SET_CURSOR(7,1); lcd_write(byte(7));
+}
+
+///////////////////
+// LCD functions //
+///////////////////
+
+// LCD initialisation from LiquidCrystal.cpp
+void lcd_init() {
   SET_OUTPUT(RS); SET_OUTPUT(EN);
   SET_OUTPUT(D4); SET_OUTPUT(D5); SET_OUTPUT(D6); SET_OUTPUT(D7);
   delay(50); // This is necessary
@@ -69,84 +142,12 @@ void lcd_init() {
   }
 }
 
-void setup() {
-  pinMode(A5,INPUT);
-
-  lcd_init();
-
-  // Blank both positions
-  SET_CURSOR(0,1); lcd_write(byte(0x20));
-  SET_CURSOR(1,1); lcd_write(byte(0x20));
-  SET_CURSOR(2,1); lcd_write(byte(0x20));
-  SET_CURSOR(3,1); lcd_write(byte(0x20));
-}
-
-void loop() {
-  // Characters in positions 0, 4, 8, 12, 16, 20, 24 and 28
-  int offset = 0;
-  for (int j=0; j < 4; j++) {
-    START_CGRAM_WRITE(j);
-    lcd_write_pixel_patch(0, 4*j+offset);
-  }
-  // for (int j=0; j < 4; j++) {
-  //   START_CGRAM_WRITE(j+4);
-  //   lcd_write_pixel_patch(1, 4*j+offset);
-  // }
-
-  // DOESN'T:
-  // #pragma unroll (4)
-
-  for (int j=0; j < 4; j++ ) {
-    START_CGRAM_WRITE(j+4);
-    lcd_write_pixel_patch(1, 4*j);
-  }
-
-  // WORKS:
-  // START_CGRAM_WRITE(4);
-  // lcd_write_pixel_patch(1, 0);
-
-  // START_CGRAM_WRITE(5);
-  // lcd_write_pixel_patch(1, 4);
-
-  // START_CGRAM_WRITE(6);
-  // lcd_write_pixel_patch(1, 8);
-
-  // START_CGRAM_WRITE(7);
-  // lcd_write_pixel_patch(1, 12);
-
-
-  // for (int j=0; j < 4; j++) {
-  //   SET_CURSOR(4*j+offset,0); lcd_write(byte(j));
-  // }
-  // // for (int j=0; j < 4; j++) {
-  // //   SET_CURSOR(4*j+offset,1); lcd_write(byte(j+4));
-  // // }
-
-  // delay(20);
-
-  // for (int j=0; j < 4; j++) {
-  //   SET_CURSOR(4*j+offset,0); lcd_write(byte(0x20));
-  // }
-  // for (int j=0; j < 4; j++) {
-  //   SET_CURSOR(4*j+offset,1); lcd_write(byte(0x20));
-  // }
-
-  SET_CURSOR(0,1); lcd_write(byte(0));
-  SET_CURSOR(1,1); lcd_write(byte(1));
-  SET_CURSOR(2,1); lcd_write(byte(2));
-  SET_CURSOR(3,1); lcd_write(byte(3));
-  SET_CURSOR(4,1); lcd_write(byte(4));
-  SET_CURSOR(5,1); lcd_write(byte(5));
-  SET_CURSOR(6,1); lcd_write(byte(6));
-  SET_CURSOR(7,1); lcd_write(byte(7));
-}
-
 void lcd_write_empty() {
   WRITE(RS,HIGH);
   for (int k=0;k<8;k++) {
     byte value = B00000;
-    lcd_write4bits(value>>4);
-    lcd_write4bits(value);
+    // lcd_write4bits(value>>4); lcd_write4bits(value);
+    lcd_write8bits(value);
   }
 }
 
@@ -154,21 +155,41 @@ void lcd_write_pixel_patch(int row, int col) {
   WRITE(RS,HIGH);
   for (int line=0;line<8;line++) {
     byte value = pixels[row][col][line];
-    lcd_write4bits(value>>4);
-    lcd_write4bits(value);
+    // lcd_write4bits(value>>4); lcd_write4bits(value);
+    lcd_write8bits(value);
   }
 }
 
 void lcd_write(byte value) {
   WRITE(RS,HIGH);
-  lcd_write4bits(value>>4);
-  lcd_write4bits(value);
+  // lcd_write4bits(value>>4); lcd_write4bits(value);
+  lcd_write8bits(value);
 }
 
 void lcd_command(byte value) {
   WRITE(RS,LOW);
-  lcd_write4bits(value>>4);
-  lcd_write4bits(value);
+  // lcd_write4bits(value>>4); lcd_write4bits(value);
+  lcd_write8bits(value);
+}
+
+// Pulse enable pin
+// commands need > 37us to settle
+# define PULSE_ENABLE do {WRITE(EN, HIGH); delayMicroseconds(1); WRITE(EN, LOW); delayMicroseconds(50);} while (0)
+
+void lcd_write8bits(byte value) {
+  WRITE(D4,(value >> 4) & 0x01);
+  WRITE(D5,(value >> 5) & 0x01);
+  WRITE(D6,(value >> 6) & 0x01);
+  WRITE(D7,(value >> 7) & 0x01);
+
+  PULSE_ENABLE;
+
+  WRITE(D4,(value >> 0) & 0x01);
+  WRITE(D5,(value >> 1) & 0x01);
+  WRITE(D6,(value >> 2) & 0x01);
+  WRITE(D7,(value >> 3) & 0x01);
+
+  PULSE_ENABLE;
 }
 
 void lcd_write4bits(byte value) {
@@ -185,43 +206,3 @@ void lcd_write4bits(byte value) {
   WRITE(EN, LOW);
   delayMicroseconds(50); // commands need > 37us to settle
 }
-
-
-
-
-
-  // // Characters in positions 2 and 6
-  // START_CGRAM_WRITE(0);
-  // for (int i=0; i<8; i++) {lcd_write(two[i]);}
-  // START_CGRAM_WRITE(1);
-  // for (int i=0; i<8; i++) {lcd_write(six[i]);}
-
-  // SET_CURSOR(1,0); lcd_write(byte(0x0));
-  // SET_CURSOR(5,0); lcd_write(byte(0x1));
-  // delay(20);
-  // SET_CURSOR(1,0); lcd_write(byte(0x20));
-  // SET_CURSOR(5,0); lcd_write(byte(0x20));
-
-  // // Characters in positions 3 and 7
-  // START_CGRAM_WRITE(0);
-  // for (int i=0; i<8; i++) {lcd_write(three[i]);}
-  // START_CGRAM_WRITE(1);
-  // for (int i=0; i<8; i++) {lcd_write(seven[i]);}
-
-  // SET_CURSOR(2,0); lcd_write(byte(0x0));
-  // SET_CURSOR(6,0); lcd_write(byte(0x1));
-  // delay(20);
-  // SET_CURSOR(2,0); lcd_write(byte(0x20));
-  // SET_CURSOR(6,0); lcd_write(byte(0x20));
-
-  // // Characters in positions 4 and 8
-  // START_CGRAM_WRITE(0);
-  // for (int i=0; i<8; i++) {lcd_write(four[i]);}
-  // START_CGRAM_WRITE(1);
-  // for (int i=0; i<8; i++) {lcd_write(eight[i]);}
-
-  // SET_CURSOR(3,0); lcd_write(byte(0x0));
-  // SET_CURSOR(7,0); lcd_write(byte(0x1));
-  // delay(20);
-  // SET_CURSOR(3,0); lcd_write(byte(0x20));
-  // SET_CURSOR(7,0); lcd_write(byte(0x20));

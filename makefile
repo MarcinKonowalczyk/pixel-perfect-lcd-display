@@ -91,9 +91,7 @@ VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/variants/standard
 
 # VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/libraries/SPI/src
 # VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/libraries/SoftwareSerial/src
-VPATH += $(ARDUINO_INSTALL_DIR)/libraries/LiquidCrystal/src
-
-# VPATH += $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/avr/include/avr/
+# VPATH += $(ARDUINO_INSTALL_DIR)/libraries/LiquidCrystal/src
 
 ## Collect compiler flags
 
@@ -103,7 +101,6 @@ CXXFLAGS =
 # Pass definitions to the code
 # 16MHz Clock Speed
 DEFS = -D F_CPU=16000000UL
-# DEFS += -D ARDUINO=$(ARDUINO_VERSION_NUMBER)
 CFLAGS += $(DEFS)
 CXXFLAGS += $(DEFS)
 
@@ -164,7 +161,7 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJ)
 	@ echo " ELF  $(notdir $@) <- $(notdir $<)"
 	@ $(CXX) -Wl,--gc-sections,--relax $(CXXFLAGS) -o $@ -L. $(OBJ) -lm
 
-## Build objects from source
+# Build source files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@ echo " CC   $(notdir $@) <- $(notdir $<)"
 	@ $(CC) -MMD -c $(CFLAGS) $< -o $@
@@ -173,17 +170,18 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@ echo " CXX  $(notdir $@) <- $(notdir $<)"
 	@ $(CXX) -MMD -c $(CXXFLAGS) $< -o $@
 
-# Silence warnings for library code (won't work for .h files, unfortunately)
-# LIBWARN = -w -Wno-packed-bitfield-compat
-
-# # Object files for Arduino libs will be created in $(BUILD_DIR)/arduino
+# Build library files in $(BUILD_DIR)/arduino_lib
 $(BUILD_DIR)/arduino_lib/%.o: %.c
 	@ echo " CC   $(notdir $@) <- $(notdir $<)"
-	@ $(CC) -MMD -c $(CFLAGS) $(LIBWARN) $< -o $@
+	@ $(CC) -MMD -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/arduino_lib/%.o: %.cpp
 	@ echo " CXX  $(notdir $@) <- $(notdir $<)"
-	@ $(CXX) -MMD -c $(CXXFLAGS) $(LIBWARN) $< -o $@
+	@ $(CXX) -MMD -c $(CXXFLAGS) $< -o $@
+
+# Temp
+%.s : %.cpp
+	$(CC) -S -fverbose-asm $(CFLAGS) $< -o $@
 
 # Automaticaly include the dependency files created by gcc
 # This makes sure make sees changes in .h files too

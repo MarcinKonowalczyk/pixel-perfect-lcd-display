@@ -1,4 +1,3 @@
-
 #include <inttypes.h>
 #define byte uint8_t
 // #include <binary.h>
@@ -23,6 +22,7 @@ void lcd_write_pixel_patch(int row, int col);
 void lcd_write(byte value);
 void lcd_command(byte value);
 void lcd_write4bits(byte value);
+void lcd_write8bits(byte value);
 
 
 // lcd commands
