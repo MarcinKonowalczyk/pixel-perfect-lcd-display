@@ -1,8 +1,9 @@
-#include "pixel-perfect.h"
 #include <Arduino.h>
+
+#include "pixel-perfect.h"
 #include "fastio.h"
 
-// 
+// Row x Column x Line
 byte pixels[2][16][8] = {0};
 
 // Helper macros to addres the pixel array per-pixel
@@ -12,25 +13,25 @@ byte pixels[2][16][8] = {0};
 
 void setup() {
   set_debug_characters();
-  SET_PIXEL(8,5,1);
-  SET_PIXEL(8,4,GET_PIXEL(8,5));
+
+  // To test whether SET_ and GET_PIXEL macros work
+  // SET_PIXEL(8,5,1);
+  // SET_PIXEL(8,4,GET_PIXEL(8,5));
 
   SET_INPUT(IN);
   // pinMode(A5,INPUT);
+
   lcd_init();
 
   // Blank both positions
-  SET_CURSOR(0,1); lcd_write(byte(0x20));
+  SET_CURSOR(1,0); lcd_write(byte(0x20));
   SET_CURSOR(1,1); lcd_write(byte(0x20));
-  SET_CURSOR(2,1); lcd_write(byte(0x20));
-  SET_CURSOR(3,1); lcd_write(byte(0x20));
+  SET_CURSOR(1,2); lcd_write(byte(0x20));
+  SET_CURSOR(1,3); lcd_write(byte(0x20));
 }
 
 void loop() {
-  for (int offset = 0; offset < 4; offset++) {
-    write_cgram_at_offset(offset);
-    blink_characters_at_offset(offset);
-  }
+  display_pixel_array();
 }
 
 // Debug character set
@@ -145,49 +146,33 @@ void set_debug_characters() {
   pixels[1][15][4] = B00010;
 }
 
-// CGRAM helpers
+///////////////////
+// CGRAM helpers //
+///////////////////
+
+void display_pixel_array() {
+  for (int offset = 0; offset < 4; offset++) {
+    write_cgram_at_offset(offset);
+    blink_characters_at_offset(offset);
+  }
+}
 
 void write_cgram_at_offset(int offset) {
-  START_CGRAM_WRITE(0);
-  lcd_write_pixel_patch(0, 0+offset);
-
-  START_CGRAM_WRITE(1);
-  lcd_write_pixel_patch(0, 4+offset);
-  
-  START_CGRAM_WRITE(2);
-  lcd_write_pixel_patch(0, 8+offset);
-  
-  START_CGRAM_WRITE(3);
-  lcd_write_pixel_patch(0, 12+offset);
-
-  START_CGRAM_WRITE(4);
-  lcd_write_pixel_patch(1, 0+offset);
-
-  START_CGRAM_WRITE(5);
-  lcd_write_pixel_patch(1, 4+offset);
-
-  START_CGRAM_WRITE(6);
-  lcd_write_pixel_patch(1, 8+offset);
-
-  START_CGRAM_WRITE(7);
-  lcd_write_pixel_patch(1, 12+offset);
+  for (int j=0; j < 8; j++) {
+    START_CGRAM_WRITE(j);
+    lcd_write_pixel_patch( j/4, (4*j+offset)%16 );
+  }
 }
 
 void blink_characters_at_offset(int offset) {
-  for (int j=0; j < 4; j++) {
-    SET_CURSOR(4*j+offset,0); lcd_write(byte(j));
+  for (int j=0; j < 8; j++) {
+    SET_CURSOR( j/4, (4*j+offset)%16 );
+    lcd_write(byte(j));
   }
-  for (int j=0; j < 4; j++) {
-    SET_CURSOR(4*j+offset,1); lcd_write(byte(j+4));
-  }
-
   delay(20);
-
-  for (int j=0; j < 4; j++) {
-    SET_CURSOR(4*j+offset,0); lcd_write(byte(0x20));
-  }
-  for (int j=0; j < 4; j++) {
-    SET_CURSOR(4*j+offset,1); lcd_write(byte(0x20));
+  for (int j=0; j < 8; j++) {
+    SET_CURSOR( j/4, (4*j+offset)%16 );
+    lcd_write(byte(0x20));
   }
 }
 
@@ -219,8 +204,8 @@ void lcd_init() {
   lcd_write4bits(0x02); 
 
   // // finally, set # lines, font size, etc.
-  lcd_command(LCD_FUNCTIONSET | LCD_2LINE);
-  lcd_command(LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF);
+  lcd_command(0x20 | 0x08); // LCD_FUNCTIONSET | LCD_2LINE
+  lcd_command(0x08 | 0x04); // LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
 
   lcd_command(0x01); // Clear display
   delay(2); // Useful after the clear to reduce screen glitches
@@ -242,8 +227,7 @@ void lcd_write_empty() {
 void lcd_write_pixel_patch(int row, int col) {
   WRITE(RS,HIGH);
   for (int line=0;line<8;line++) {
-    byte value = pixels[row][col][line];
-    lcd_write8bits(value);
+    lcd_write8bits(pixels[row][col][line]);
   }
 }
 
