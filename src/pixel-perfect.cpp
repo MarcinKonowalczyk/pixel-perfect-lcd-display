@@ -46,22 +46,18 @@ void setup() {
 void loop() {
   // Characters in positions 0, 4, 8, 12, 16, 20, 24 and 28
   int offset = 0;
-  for (int j=0; j < 4; j++) {
-    START_CGRAM_WRITE(j);
-    lcd_write_pixel_patch(0, 4*j+offset);
-  }
-  // for (int j=0; j < 4; j++) {
-  //   START_CGRAM_WRITE(j+4);
-  //   lcd_write_pixel_patch(1, 4*j+offset);
-  // }
+  START_CGRAM_WRITE(0);
+  lcd_write_pixel_patch(0, 0);
 
-  // DOESN'T:
-  // for (int j=0; j < 4; j++ ) {
-  //   START_CGRAM_WRITE(j+4);
-  //   lcd_write_pixel_patch(1, 4*j);
-  // }
+  START_CGRAM_WRITE(1);
+  lcd_write_pixel_patch(0, 4);
+  
+  START_CGRAM_WRITE(2);
+  lcd_write_pixel_patch(0, 8);
+  
+  START_CGRAM_WRITE(3);
+  lcd_write_pixel_patch(0, 12);
 
-  // WORKS:
   START_CGRAM_WRITE(4);
   lcd_write_pixel_patch(1, 0);
 
@@ -74,31 +70,30 @@ void loop() {
   START_CGRAM_WRITE(7);
   lcd_write_pixel_patch(1, 12);
 
+  for (int j=0; j < 4; j++) {
+    SET_CURSOR(4*j+offset,0); lcd_write(byte(j));
+  }
+  for (int j=0; j < 4; j++) {
+    SET_CURSOR(4*j+offset,1); lcd_write(byte(j+4));
+  }
 
-  // for (int j=0; j < 4; j++) {
-  //   SET_CURSOR(4*j+offset,0); lcd_write(byte(j));
-  // }
-  // // for (int j=0; j < 4; j++) {
-  // //   SET_CURSOR(4*j+offset,1); lcd_write(byte(j+4));
-  // // }
+  delay(20);
 
-  // delay(20);
+  for (int j=0; j < 4; j++) {
+    SET_CURSOR(4*j+offset,0); lcd_write(byte(0x20));
+  }
+  for (int j=0; j < 4; j++) {
+    SET_CURSOR(4*j+offset,1); lcd_write(byte(0x20));
+  }
 
-  // for (int j=0; j < 4; j++) {
-  //   SET_CURSOR(4*j+offset,0); lcd_write(byte(0x20));
-  // }
-  // for (int j=0; j < 4; j++) {
-  //   SET_CURSOR(4*j+offset,1); lcd_write(byte(0x20));
-  // }
-
-  SET_CURSOR(0,1); lcd_write(byte(0));
-  SET_CURSOR(1,1); lcd_write(byte(1));
-  SET_CURSOR(2,1); lcd_write(byte(2));
-  SET_CURSOR(3,1); lcd_write(byte(3));
-  SET_CURSOR(4,1); lcd_write(byte(4));
-  SET_CURSOR(5,1); lcd_write(byte(5));
-  SET_CURSOR(6,1); lcd_write(byte(6));
-  SET_CURSOR(7,1); lcd_write(byte(7));
+  // SET_CURSOR(0,1); lcd_write(byte(0));
+  // SET_CURSOR(1,1); lcd_write(byte(1));
+  // SET_CURSOR(2,1); lcd_write(byte(2));
+  // SET_CURSOR(3,1); lcd_write(byte(3));
+  // SET_CURSOR(4,1); lcd_write(byte(4));
+  // SET_CURSOR(5,1); lcd_write(byte(5));
+  // SET_CURSOR(6,1); lcd_write(byte(6));
+  // SET_CURSOR(7,1); lcd_write(byte(7));
 }
 
 ///////////////////
