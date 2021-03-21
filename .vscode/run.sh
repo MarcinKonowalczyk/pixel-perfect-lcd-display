@@ -3,3 +3,4 @@ echo "hi! ^_^"
 
 # make clean; make;
 make upload;
+make size;

@@ -1,8 +1,6 @@
 
 #include "pixel-perfect.h"
 #include <Arduino.h>
-// #include <LiquidCrystal.h> // For the defs
-
 #include "fastio.h"
 
 byte pixels[2][16][8] = {0};
@@ -96,23 +94,25 @@ void loop() {
   // }
 
   // DOESN'T:
-  // for (int j=0; j < 4; j++ ) {
-  //   START_CGRAM_WRITE(j+4);
-  //   lcd_write_pixel_patch(1, 4*j);
-  // }
+  // #pragma unroll (4)
+
+  for (int j=0; j < 4; j++ ) {
+    START_CGRAM_WRITE(j+4);
+    lcd_write_pixel_patch(1, 4*j);
+  }
 
   // WORKS:
-  START_CGRAM_WRITE(4);
-  lcd_write_pixel_patch(1, 0);
+  // START_CGRAM_WRITE(4);
+  // lcd_write_pixel_patch(1, 0);
 
-  START_CGRAM_WRITE(5);
-  lcd_write_pixel_patch(1, 4);
+  // START_CGRAM_WRITE(5);
+  // lcd_write_pixel_patch(1, 4);
 
-  START_CGRAM_WRITE(6);
-  lcd_write_pixel_patch(1, 8);
+  // START_CGRAM_WRITE(6);
+  // lcd_write_pixel_patch(1, 8);
 
-  START_CGRAM_WRITE(7);
-  lcd_write_pixel_patch(1, 12);
+  // START_CGRAM_WRITE(7);
+  // lcd_write_pixel_patch(1, 12);
 
 
   // for (int j=0; j < 4; j++) {

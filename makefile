@@ -1,4 +1,5 @@
-# 
+# Pixel perfect LCD display makefile
+#
 # Written by Marcin Konowalczyk
 # Based on the makefile for Marlin firmware
 
@@ -72,15 +73,13 @@ OBJCOPY = $(AVR_TOOLS_PATH)/avr-objcopy
 AVRDUDE = $(AVR_TOOLS_PATH)/avrdude
 SIZE = $(AVR_TOOLS_PATH)/avr-size
 
+OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
+NM = $(AVR_TOOLS_PATH)/avr-nm
+
 # Programming support using avrdude. Settings and variables.
 UPLOAD_PORT = /dev/cu.usbmodem14201
 AVRDUDE_CONF = $(AVR_TOOLS_PATH)/../etc/avrdude.conf
-AVRDUDE_FLAGS = -v -D -C $(AVRDUDE_CONF) -p atmega328p -c arduino
-# AVRDUDE_FLAGS += -b 115200
-
-# AR = $(AVR_TOOLS_PATH)$(TOOL_PREFIX)-ar
-# SIZE = $(AVR_TOOLS_PATH)$(TOOL_PREFIX)-size
-# NM = $(AVR_TOOLS_PATH)$(TOOL_PREFIX)-nm
+AVRDUDE_FLAGS = -v -D -C $(AVRDUDE_CONF) -p m328p -c arduino
 
 VPATH =
 
@@ -123,13 +122,14 @@ CXXFLAGS += $(WARNINGS)
 CWARN += -Wstrict-prototypes
 
 # Tuning
-# TUNING = -fsigned-char -funsigned-bitfields -fno-exceptions -fshort-enums -ffunction-sections -fdata-sections
+TUNING = -funroll-loops
+# TUNING += -fsigned-char -funsigned-bitfields -fno-exceptions -fshort-enums -ffunction-sections -fdata-sections
 # CTUNING += -flto
 CFLAGS += $(TUNING)
 CXXFLAGS += $(TUNING)
 
 # Optimisation level
-OPTIMISATION = -Os
+OPTIMISATION = -O3
 CFLAGS += $(OPTIMISATION)
 CXXFLAGS += $(OPTIMISATION)
 
@@ -141,11 +141,9 @@ CXXFLAGS += -mmcu=atmega328p
 # CEXTRA = 
 # CXXEXTRA = -fno-use-cxa-atexit -fno-threadsafe-statics -fno-rtti
 
-##
-##
-##
+## Recipies
 
-# Defalut target
+# Default target
 all: size
 
 # Remove the content of the build directory
@@ -157,13 +155,9 @@ clean:
 mkdir:
 	@ mkdir -p $(dir $(OBJ))
 
-build: mkdir elf hex bin
+build: mkdir elf hex lss sym
 
 elf: $(BUILD_DIR)/$(TARGET).elf
-
-##
-## Build instructions
-##
 
 # Link: create ELF output file from library.
 $(BUILD_DIR)/$(TARGET).elf: $(OBJ)
@@ -195,19 +189,24 @@ $(BUILD_DIR)/arduino_lib/%.o: %.cpp
 # This makes sure make sees changes in .h files too
 -include ${patsubst %.o, %.d, ${OBJ}}
 
-bin: $(BUILD_DIR)/$(TARGET).bin
 hex: $(BUILD_DIR)/$(TARGET).hex
+lss: $(BUILD_DIR)/$(TARGET).lss
+sym: $(BUILD_DIR)/$(TARGET).sym
 
 %.hex: %.elf
 	@ echo " HEX  $(notdir $@)"
-	@ $(OBJCOPY) -O ihex -R .eeprom $< $@
+	@ $(OBJCOPY) --output-target ihex --remove-section .eeprom $< $@
 
-%.bin: %.elf
-	@ echo " BIN  $(notdir $@)"
-	@ $(OBJCOPY) -O binary -R .eeprom $< $@
+# Elf disassembly
+%.lss: %.elf
+	@ $(OBJDUMP) -h --source --disassemble-all $< > $@
+
+# Symbol table
+%.sym: %.elf
+	@ $(NM) --numeric-sort $< > $@
 
 upload: build
-	$(AVRDUDE) $(AVRDUDE_FLAGS) -U flash:w:$(BUILD_DIR)/$(TARGET).hex:i -P $(UPLOAD_PORT)
+	@ $(AVRDUDE) $(AVRDUDE_FLAGS) -U flash:w:$(BUILD_DIR)/$(TARGET).hex:i -P $(UPLOAD_PORT)
 
 # Display size fo the compiled elf file
 size: build
