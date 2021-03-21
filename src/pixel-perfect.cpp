@@ -6,24 +6,8 @@
 // Row x Column x Line
 byte pixels[2][16][8] = {0};
 
-// Helper macros to addres the pixel array per-pixel
-// Here 'row' and 'col' are the indices of the individual pixels
-#define GET_PIXEL(row,col) (pixels[row/8][col/5][row%8] >> 4-(col%5)) & 0x1
-#define SET_PIXEL(row,col,value) pixels[row/8][col/5][row%8] = (value & 0x1) << (4-(col%5))
-
-// #define SET_CHARACTER(row,col,bytes) do {\
-//   for (int _line_number = 0; _line_number < 8; _line_number++) {\
-//     pixels[row][col][_line_number] = bytes[_line_number];\
-//   }\
-// } while (0)
-
-// Set character at (character index) row, col in the pixel array
-#define SET_CHARACTER(row,col, B0,B1,B2,B3,B4,B5,B6,B7)\
-pixels[row][col][0] = B0; pixels[row][col][1] = B1; pixels[row][col][2] = B2; pixels[row][col][3] = B3;\
-pixels[row][col][4] = B4; pixels[row][col][5] = B5; pixels[row][col][6] = B6; pixels[row][col][7] = B7;
-
 void setup() {
-  set_debug_characters();
+  SET_DEBUG_CHARACTERS();
 
   // To test whether SET_ and GET_PIXEL macros work
   // SET_PIXEL(8,5,1);
@@ -43,54 +27,6 @@ void setup() {
 
 void loop() {
   display_pixel_array();
-}
-
-// Debug character set
-
-void set_debug_characters() {
-  // Debug charater set 1
-  // Characters at positions 0, 4, 8 and 12
-  SET_CHARACTER(0,  0, 0,0,B10000,B10000,B10000,0,0,0);
-  SET_CHARACTER(0,  4, 0,0,B01000,B10000,B10000,0,0,0);
-  SET_CHARACTER(0,  8, 0,0,B00100,B10000,B10000,0,0,0);
-  SET_CHARACTER(0, 12, 0,0,B00010,B10000,B10000,0,0,0);
-  SET_CHARACTER(1,  0, 0,0,B10000,B01000,B10000,0,0,0);
-  SET_CHARACTER(1,  4, 0,0,B01000,B01000,B10000,0,0,0);
-  SET_CHARACTER(1,  8, 0,0,B00100,B01000,B10000,0,0,0);
-  SET_CHARACTER(1, 12, 0,0,B00010,B01000,B10000,0,0,0);
-
-  // Debug charater set 2
-  // Characters at positions 1, 5, 8 and 13
-  SET_CHARACTER(0,  1, 0,0,B10000,B10000,B01000,0,0,0);
-  SET_CHARACTER(0,  5, 0,0,B01000,B10000,B01000,0,0,0);
-  SET_CHARACTER(0,  9, 0,0,B00100,B10000,B01000,0,0,0);
-  SET_CHARACTER(0, 13, 0,0,B00010,B10000,B01000,0,0,0);
-  SET_CHARACTER(1,  1, 0,0,B10000,B01000,B01000,0,0,0);
-  SET_CHARACTER(1,  5, 0,0,B01000,B01000,B01000,0,0,0);
-  SET_CHARACTER(1,  9, 0,0,B00100,B01000,B01000,0,0,0);
-  SET_CHARACTER(1, 13, 0,0,B00010,B01000,B01000,0,0,0);
-
-  // Debug charater set 3
-  // Characters at positions 2, 6, 10 and 14
-  SET_CHARACTER(0,  2, 0,0,B10000,B10000,B00100,0,0,0);
-  SET_CHARACTER(0,  6, 0,0,B01000,B10000,B00100,0,0,0);
-  SET_CHARACTER(0, 10, 0,0,B00100,B10000,B00100,0,0,0);
-  SET_CHARACTER(0, 14, 0,0,B00010,B10000,B00100,0,0,0);
-  SET_CHARACTER(1,  2, 0,0,B10000,B01000,B00100,0,0,0);
-  SET_CHARACTER(1,  6, 0,0,B01000,B01000,B00100,0,0,0);
-  SET_CHARACTER(1, 10, 0,0,B00100,B01000,B00100,0,0,0);
-  SET_CHARACTER(1, 14, 0,0,B00010,B01000,B00100,0,0,0);
-
-  // Debug charater set 4
-  // Characters at positions 3, 7, 11 and 15
-  SET_CHARACTER(0,  3, 0,0,B10000,B10000,B00010,0,0,0);
-  SET_CHARACTER(0,  7, 0,0,B01000,B10000,B00010,0,0,0);
-  SET_CHARACTER(0, 11, 0,0,B00100,B10000,B00010,0,0,0);
-  SET_CHARACTER(0, 15, 0,0,B00010,B10000,B00010,0,0,0);
-  SET_CHARACTER(1,  3, 0,0,B10000,B01000,B00010,0,0,0);
-  SET_CHARACTER(1,  7, 0,0,B01000,B01000,B00010,0,0,0);
-  SET_CHARACTER(1, 11, 0,0,B00100,B01000,B00010,0,0,0);
-  SET_CHARACTER(1, 15, 0,0,B00010,B01000,B00010,0,0,0);
 }
 
 ///////////////////
