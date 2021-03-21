@@ -15,6 +15,14 @@ Requires [Arduino IDE](https://github.com/arduino/Arduino/) to be installed. The
 
 Currently makefile works only for MacOS, but could be easily adapted to work on other operations systems.
 
+## Explanation
+
+
+CGRAM:
+
+<p align="center"><img src="https://i.stack.imgur.com/1TKZH.gif" width="300px"></p>
+
 ## Links
 
  - https://www.instructables.com/Custom-Large-Font-For-16x2-LCDs/
+ - https://arduino.stackexchange.com/questions/46828/how-to-show-the-º-character-in-a-lcd
