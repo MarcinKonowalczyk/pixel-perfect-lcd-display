@@ -29,3 +29,10 @@ CGRAM:
 
  - https://www.instructables.com/Custom-Large-Font-For-16x2-LCDs/
  - https://arduino.stackexchange.com/questions/46828/how-to-show-the-º-character-in-a-lcd
+
+## ToDos
+
+- [ ] Different scanning pattern ?
+- [ ] Fix spacing by accounting for inter-character gaps
+- [ ] Write explanation section above
+- [ ] Wiring diagram
