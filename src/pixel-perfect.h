@@ -5,12 +5,12 @@
 byte pixels[2][16][8] = {0};
 
 // LCD pins
-#define RS 6
-#define EN 7
-#define D4 8
-#define D5 9
-#define D6 12
-#define D7 13
+#define RS 4
+#define EN 6
+#define D4 7
+#define D5 8
+#define D6 9
+#define D7 10
 
 // CGRAM helper function headers
 void display_pixel_array();
