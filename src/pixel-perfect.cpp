@@ -4,17 +4,46 @@
 #include "fastio.h"
 
 void setup() {
-  SET_DEBUG_CHARACTERS();
+  // SET_DEBUG_CHARACTERS();
   lcd_init();
 }
 
+const int period = 5000;
+byte prev_value = 7;
+
 void loop() {
+  // Oscillation between 0 and 16
+  byte value = (byte) ( (sin(2*PI*millis()/period)+1)*8 );
+  
+  // Shift the pixel array right
+  for (int col=79; col>0; col--) {
+    for (int row=0; row < 16; row++) {
+      SET_PIXEL(row,col,GET_PIXEL(row,col-1));
+    }
+  }
+
+  // Zero out column 0
+  for (int row=0; row<16; row++) {
+    SET_PIXEL(row,0,0);
+  }
+
+  // Set new pixel value
+  SET_PIXEL(value,0,1);
+
+  // Crude anti-alias
+  for (int row = min(prev_value+1,value); row < max(value,prev_value); row++) {
+    SET_PIXEL(row,0,1);
+  }
+
   display_pixel_array();
+  prev_value = value;
 }
 
 ///////////////////
 // CGRAM helpers //
 ///////////////////
+
+// #define DO_OFFSET(offset) do { write_cgram_at_offset(offset); blink_characters_at_offset(offset); } while (0)
 
 void display_pixel_array() {
   for (int offset = 0; offset < 4; offset++) {
@@ -46,7 +75,7 @@ void blink_characters_at_offset(int offset) {
 // LCD functions //
 ///////////////////
 
-// LCD initialisation from LiquidCrystal.cpp
+// LCD initialisation based on LiquidCrystal.cpp
 void lcd_init() {
   SET_OUTPUT(RS); SET_OUTPUT(EN);
   SET_OUTPUT(D4); SET_OUTPUT(D5); SET_OUTPUT(D6); SET_OUTPUT(D7);

@@ -27,7 +27,7 @@ void lcd_write8bits(byte value);
 void lcd_write4bits(byte value);
 
 // LCD command macros
-#define SET_CURSOR(row,col) lcd_command(0x80 | (col + row*0x40) )
+#define SET_CURSOR(_row,_col) lcd_command(0x80 | ((_col) + (_row)*0x40) )
 #define START_CGRAM_WRITE(position) lcd_command(0x40 + position*0x08);
 
 // Pulse enable pin macro
@@ -37,19 +37,26 @@ void lcd_write4bits(byte value);
 
 // Helper macros to addres the pixel array per-pixel
 // Here 'row' and 'col' are the indices of the individual pixels
-#define GET_PIXEL(row,col) (pixels[row/8][col/5][row%8] >> 4-(col%5)) & 0x1
-#define SET_PIXEL(row,col,value) pixels[row/8][col/5][row%8] = (value & 0x1) << (4-(col%5))
+// #define GET_LINE(_row,_col) pixels[_row/8][_col/5][_row%8]
+#define GET_PIXEL(_row,_col) pixels[(_row)/8][(_col)/5][(_row)%8] >> (4-((_col)%5)) & 0x1
+#define SET_PIXEL(_row,_col,_value) do {\
+  pixels[(_row)/8][(_col)/5][(_row)%8] &= ~(0x1 << (4-((_col)%5)));\
+  pixels[(_row)/8][(_col)/5][(_row)%8] |= ((_value) & 0x1) << (4-((_col)%5));\
+} while (0)
+
+// Set the pixel array to all zeros
+#define ALL_ZEROS(...) memset(pixels, 0, sizeof pixels)
 
 // Set character at (character index) row, col in the pixel array
-#define SET_CHARACTER(row,col, B0,B1,B2,B3,B4,B5,B6,B7) do {\
-  pixels[row][col][0] = B0;\
-  pixels[row][col][1] = B1;\
-  pixels[row][col][2] = B2;\
-  pixels[row][col][3] = B3;\
-  pixels[row][col][4] = B4;\
-  pixels[row][col][5] = B5;\
-  pixels[row][col][6] = B6;\
-  pixels[row][col][7] = B7;\
+#define SET_CHARACTER(_row,_col, B0,B1,B2,B3,B4,B5,B6,B7) do {\
+  pixels[_row][_col][0] = B0;\
+  pixels[_row][_col][1] = B1;\
+  pixels[_row][_col][2] = B2;\
+  pixels[_row][_col][3] = B3;\
+  pixels[_row][_col][4] = B4;\
+  pixels[_row][_col][5] = B5;\
+  pixels[_row][_col][6] = B6;\
+  pixels[_row][_col][7] = B7;\
 } while (0)
 
 // Debug character set
