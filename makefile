@@ -44,13 +44,14 @@ SRC_DIR = $(PROJECT_ROOT)/src
 
 # Library files
 LIB_SRC = wiring.c wiring_digital.c hooks.c
-# LIB_SRC += wiring_analog.c wiring_digital.c wiring_shift.c
+LIB_SRC += wiring_analog.c
+# LIB_SRC += wiring_shift.c
 # LIB_SRC += WInterrupts.c
 
-LIB_CXXSRC =
-# LIB_CXXSRC += WMath.cpp WString.cpp Print.cpp SPI.cpp
-# LIB_CXXSRC += Tone.cpp
 LIB_CXXSRC += main.cpp
+# For the usb serial interface
+LIB_CXXSRC += HardwareSerial.cpp HardwareSerial0.cpp Print.cpp
+
 
 # Source files
 SRC = $(shell find $(SRC_DIR) -name '*.c' -type f)
@@ -85,12 +86,10 @@ VPATH =
 
 # Most core arduino libraries
 VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/cores/arduino
+# VPATH += $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/avr/include/avr
 
 # Location of pins_arduino.h requred by Arduino.h
 VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/variants/standard
-
-# VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/libraries/SPI/src
-# VPATH += $(ARDUINO_INSTALL_DIR)/hardware/arduino/avr/libraries/SoftwareSerial/src
 # VPATH += $(ARDUINO_INSTALL_DIR)/libraries/LiquidCrystal/src
 
 ## Collect compiler flags
