@@ -50,8 +50,7 @@ LIB_SRC += wiring_analog.c
 
 LIB_CXXSRC += main.cpp
 # For the usb serial interface
-LIB_CXXSRC += HardwareSerial.cpp HardwareSerial0.cpp Print.cpp
-
+# LIB_CXXSRC += HardwareSerial.cpp HardwareSerial0.cpp Print.cpp
 
 # Source files
 SRC = $(shell find $(SRC_DIR) -name '*.c' -type f)
