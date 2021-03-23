@@ -4,26 +4,26 @@
 #include "fastio.h"
 
 void setup() {
-  // SET_DEBUG_CHARACTERS();
+  // DEBUG_CHARACTER_SET_2();
   lcd_init();
 }
 
-const int period = 5000;
+const int period = 10000;
 byte prev_value = 7;
 
 void loop() {
   // Oscillation between 0 and 16
-  byte value = (byte) ( (sin(2*PI*millis()/period)+1)*8 );
-  
+  byte value = (byte) ( (sin(2*PI*millis()/period)+1)/2*17 );
+
   // Shift the pixel array right
-  for (int col=79; col>0; col--) {
-    for (int row=0; row < 16; row++) {
+  for (int col=95; col>0; col--) {
+    for (int row=0; row < 17; row++) {
       SET_PIXEL(row,col,GET_PIXEL(row,col-1));
     }
   }
 
   // Zero out column 0
-  for (int row=0; row<16; row++) {
+  for (int row=0; row<17; row++) {
     SET_PIXEL(row,0,0);
   }
 
@@ -42,8 +42,6 @@ void loop() {
 ///////////////////
 // CGRAM helpers //
 ///////////////////
-
-// #define DO_OFFSET(offset) do { write_cgram_at_offset(offset); blink_characters_at_offset(offset); } while (0)
 
 void display_pixel_array() {
   for (int offset = 0; offset < 4; offset++) {
@@ -123,7 +121,7 @@ void lcd_write_empty() {
 void lcd_write_pixel_patch(int row, int col) {
   WRITE(RS,HIGH);
   for (int line=0;line<8;line++) {
-    lcd_write8bits(pixels[row][col][line]);
+    lcd_write8bits(pixels[row][col][line]>>1);
   }
 }
 
