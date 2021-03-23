@@ -1,7 +1,7 @@
 /*
-  Macro-only fast IO functions.
-  Based on code by Triffid_Hunter and modified by Kliment and Marcin
-  now you can simply SET_OUTPUT(STEP); WRITE(STEP, 1); WRITE(STEP, 0);
+Macro-only fast IO functions
+Based on code by Triffid_Hunter and modified by Kliment from Marlin Firmware
+https://github.com/MarlinFirmware/Marlin/blob/2.0.x/Marlin/src/HAL/AVR/fastio.h
 */
 
 #pragma once

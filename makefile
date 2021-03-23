@@ -18,14 +18,6 @@ ifeq ($(OS), Darwin)
   AVR_TOOLS_PATH = $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/bin
 endif
 
-## Get the version of the arduino software installed
-
-ARDUINO_DUMPVERSION = $(shell cat $(ARDUINO_INSTALL_DIR)/lib/version.txt)
-ARDUINO_MAJ = $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f1 -)
-ARDUINO_MIN = $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f2 -)
-ARDUINO_PATCHLEVEL = $(shell echo $(ARDUINO_DUMPVERSION) | cut -d. -f3 -)
-ARDUINO_VERSION_NUMBER = $(shell expr $(ARDUINO_MAJ) \* 10000 + $(ARDUINO_MIN) \* 100 + $(ARDUINO_PATCHLEVEL))
-
 ## Make sure we're in a root directory of the project
 PWD = $(abspath .)
 THIS_MAKEFILE = $(abspath $(firstword $(MAKEFILE_LIST)))
@@ -35,6 +27,7 @@ ifneq ($(PROJECT_ROOT),$(PWD))
   $(error Run make only form root directory)
 endif
 
+# Name of the target elf/hex/... file
 TARGET = $(notdir $(CURDIR))
 
 ## Directories and paths
@@ -77,7 +70,7 @@ OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
 NM = $(AVR_TOOLS_PATH)/avr-nm
 
 # Programming support using avrdude. Settings and variables.
-UPLOAD_PORT = /dev/cu.usbmodem14201
+UPLOAD_PORT = /dev/null
 AVRDUDE_CONF = $(AVR_TOOLS_PATH)/../etc/avrdude.conf
 AVRDUDE_FLAGS = -v -D -C $(AVRDUDE_CONF) -p m328p -c arduino
 
@@ -129,12 +122,9 @@ CFLAGS += $(OPTIMISATION)
 CXXFLAGS += $(OPTIMISATION)
 
 # MCU flags
-CFLAGS += -mmcu=atmega328p
-CXXFLAGS += -mmcu=atmega328p
-
-# Extra flags
-# CEXTRA = 
-# CXXEXTRA = -fno-use-cxa-atexit -fno-threadsafe-statics -fno-rtti
+MMCU = atmega328p
+CFLAGS += -mmcu=$(MMCU)
+CXXFLAGS += -mmcu=$(MMCU)
 
 ## Recipies
 
