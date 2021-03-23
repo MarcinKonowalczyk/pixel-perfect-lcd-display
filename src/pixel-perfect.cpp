@@ -4,6 +4,7 @@
 #include "fastio.h"
 
 void setup() {
+  // DEBUG_CHARACTER_SET_1();
   // DEBUG_CHARACTER_SET_2();
   lcd_init();
 }
@@ -73,7 +74,8 @@ void blink_characters_at_offset(int offset) {
 // LCD functions //
 ///////////////////
 
-// LCD initialisation based on LiquidCrystal.cpp
+// LCD initialisation based on LiquidCrystal library
+// https://www.arduino.cc/en/Reference/LiquidCrystal
 void lcd_init() {
   SET_OUTPUT(RS); SET_OUTPUT(EN);
   SET_OUTPUT(D4); SET_OUTPUT(D5); SET_OUTPUT(D6); SET_OUTPUT(D7);
@@ -99,7 +101,7 @@ void lcd_init() {
   // // finally, set # lines, font size, etc.
   lcd_command(0x20 | 0x08); // LCD_FUNCTIONSET | LCD_2LINE
   lcd_command(0x08 | 0x04); // LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
-  // lcd_command(0x04 | 0x02); // LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
+  lcd_command(0x04 | 0x02); // LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
 
   lcd_command(0x01); // Clear display
   delay(2); // Useful after the clear to reduce screen glitches
