@@ -1,4 +1,5 @@
 build
 .vscode/settings.json
-dis_comp
 *.s
+gif_making
+.DS_store
