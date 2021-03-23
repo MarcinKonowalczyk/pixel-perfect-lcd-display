@@ -1,6 +1,6 @@
-<img align=right width=300 src="./img/movie.gif" style="margin:10px">
-
 # Pixel-perfect LCD display <!-- omit in toc -->
+
+<img align=right width=300 src="./img/movie.gif" style="margin:10px">
 
 Typical 16x2 LCD allows one to define up to 8 custom characters. This project shows how to overcome that limit and, in result, be able to control each and every pixel of the LCD screen, at the price of some flickering, and the need for the LCD screen ti be updated every 20 milliseconds (which can, of course, be done concurrently with other processing).
 
@@ -30,9 +30,10 @@ Requires [Arduino IDE](https://github.com/arduino/Arduino/) to be installed. The
 
 Currently makefile works only for MacOS, but could be easily adapted to work on other operations systems.
 
+## Explanation
+
 <img align=right width=300 src="https://i.stack.imgur.com/1TKZH.gif" style="margin:10px">
 
-## Explanation
 
 The characters on the LCD are static mappings to a character graphics RAM (CGRAM). When you want to write `Hello World!`, you're just setting the first 12 character blocks on the screen (each 8x5 pixels) to point at positions `48 65 6c 6c 6f 20 57 6f 72 6c 64 21` in the CGRAM. These address are set to match the ASCII codes for the respective characters, at least for the most common characters in english. The table showing the full layout of the CGRAM can be shown on the right.
 
