@@ -2,7 +2,7 @@
 
 Typical 16x2 LCD allows one to define up to 8 custom characters. This project shows how to overcome that limit and, in result, be able to control each and every pixel of the LCD screen, at the price of some flickering, and the need for the LCD screen ti be updated every 20 milliseconds (which can, of course, be done concurrently with other processing).
 
-<p align="center"><img src="./img/movie.gif" width="300px"></p>
+<img align=right width=300 src="./img/movie.gif" style="margin:10px">
 
 ## Word of caution
 
@@ -35,6 +35,6 @@ CGRAM:
 ## ToDos
 
 - [ ] Different scanning pattern ?
-- [ ] Fix spacing by accounting for inter-character gaps
+- [x] Fix spacing by accounting for inter-character gaps
 - [ ] Write explanation section above
 - [ ] Wiring diagram
