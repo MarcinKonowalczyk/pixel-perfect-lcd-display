@@ -1,15 +1,8 @@
-# Pixel-perfect LCD display <!-- omit in toc -->
-
 <img align=right width=300 src="./img/movie.gif" style="margin:10px">
 
-Typical 16x2 LCD allows one to define up to 8 custom characters. This project shows how to overcome that limit and, in result, be able to control each and every pixel of the LCD screen, at the price of some flickering, and the need for the LCD screen ti be updated every 20 milliseconds (which can, of course, be done concurrently with other processing).
+# Pixel-perfect LCD display <!-- omit in toc -->
 
-- [Word of caution](#Word-of-caution)
-- [Instructions](#Instructions)
-- [Explanation](#Explanation)
-- [Adapting the code](#Adapting-the-code)
-- [Links](#Links)
-- [ToDo's](#ToDos)
+Typical 16x2 LCD allows one to define up to 8 custom characters. This project shows how to overcome that limit and, in result, be able to control each and every pixel of the LCD screen, at the price of some flickering, and the need for the LCD screen ti be updated every 20 milliseconds (which can, of course, be done concurrently with other processing).
 
 ## Word of caution
 
